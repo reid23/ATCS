@@ -76,6 +76,8 @@ mod tests {
     fn can_dequeue(){
         let mut q = Queue::new(5);
         q.enqueue(5).unwrap();
+        q.enqueue(4).unwrap();
+        q.enqueue(3).unwrap();
         assert_eq!(q.dequeue().unwrap(), Some(5));
     }
 

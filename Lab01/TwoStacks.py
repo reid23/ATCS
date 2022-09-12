@@ -35,13 +35,13 @@ class TwoStacks:
         self.ptrs[stack_num] += [1, -1][stack_num] #move the ptr by one since we just filled its spot
     def pop(self, stack_num):
         assert stack_num in [0, 1], "Invalid argument: stack_num must be 0 or 1!" #input validation
-        if self.ptrs[stack_num] in [0, len(self.arr)-1]: return #return None if there's nothing to pop
+        if self.ptrs[stack_num] == (len(self.arr)-1)*stack_num: return #return None if there's nothing to pop
         self.ptrs[stack_num] -= [1, -1][stack_num] #move the pointer down the stack by one so we can free the memory
         return self.arr[self.ptrs[stack_num]] #return the popped value
     def __str__(self): return f'Stack 1: {self.arr[:self.ptrs[0]]}\nStack 2: {self.arr[self.ptrs[1]+1:]}' #take from 0 to pointer1 for stack 1, and from pointer2 to the end for stack 2
 
 if __name__ == '__main__':
-    s = TwoStacks(10)
+    s = TwoStacks(3)
 
     print(s)
 
@@ -58,9 +58,14 @@ if __name__ == '__main__':
     print(s.pop(1))
 
     s.push(1, 8)
-    s.push(1, 9)
+    try:
+        s.push(1, 9)
+    except StackOverflowError:
+        pass
 
     print(s)
+    print(s.pop(0))
+    print(s.pop(1))
 
     for i in range(10):
         try: s.push(1, 1)
