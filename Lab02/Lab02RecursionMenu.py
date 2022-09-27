@@ -53,7 +53,31 @@ def digitsToWords(n: int) -> str:
     # digit's text to the end.
     return digitsToWords(n//10) + words[n%10]
 
+# ok i wrote this as a joke
+# since it would seem very inefficient
+# because of all the converting between strings 
+# and ints, but it turns out it's really
+# fast compared to the recursive version.
 
+# this is possibly because function calls
+# are slow and a lot of the things used 
+# here are written in c, but honestly idk
+
+# I though using
+# a=[not not bin((n>>i))[-1] for i in range(n)]
+# would make it faster
+# but turns out that's slower? maybe it all compiles
+# down to something really simple
+#%%
+def sumToTarget2(nums: list[int], x: int) -> bool:
+    n = len(nums)
+    for i in range(2**n):
+        a = list(map(int, 
+            bin(i)[2:] #get binary of i without the preceeding 0b
+            .rjust(n, '0'))) #pad with zeroes
+        if np.dot(nums, a)==x: return True
+    return False
+#%%
 def sumToTarget(nums: list[int], x: int) -> bool:
     # base case: if we've taken just the right
     # set of numbers to make a sum of x, x will
@@ -71,29 +95,32 @@ def sumToTarget(nums: list[int], x: int) -> bool:
     # in any location, so we return false
     # aka another base case
     return False
-
-
-def choose(n: int, k: int) -> int:
+#%%
+data = []
+def choose(n: int, k: int, stack_height = 1) -> int:
+    global data
     # just an implementation of the given formula
 
     # base cases: 
     # if n<k, you can't choose a subset of size k
     if n<k: return 0
 
-    # if k==0, you can't choose a subset of size 0
-    if k==0: return 0
-
+    # if k==1, there are only n sections.
+    if k==1: return n
+    data.append(stack_height)
     #and the main recursion. Given in the problem.
-    return choose(n-1, k) + choose(n-1, k-1)
+    return choose(n-1, k, stack_height+1) + choose(n-1, k-1, stack_height+1)
 
 def main():
     print('Welcome to the Recursion Calculator')
+    global data
     main_menu='''
 Choose a function:
 1) palindrome
 2) digitsToWords
 3) sumToTarget
 4) choose
+5) sumToTarget2 (not recursive)
 9) Quit
 
 Option: '''
@@ -145,8 +172,26 @@ Option: '''
                         break
                     except:
                         print('Not a valid positive integer, try again')
+                data = []
+                print(f'{n} choose {k} is {choose(n, k)}, and max stack height was {max(data)}')
+            case '5':
+                print('\nEnter integers representing a list one at a time. Enter q to finish.')
+                arr = []
+                while True:
+                    val = input('Enter a integer: ')
+                    if val=='q': break
+                    try: arr.append(int(val))
+                    except: print('not a valid integer, try again.')
+                while True:
+                    try:
+                        target = int(input('enter a target sum (integer): '))
+                        break
+                    except:
+                        print('Not a valid integer, try again.')
                 
-                print(f'{n} choose {k} is {choose(n, k)}')
+                is_or_is_not = ['is not', 'is'][sumToTarget2(arr, target)]
+                print(f'There {is_or_is_not} a subset of {arr} whose sum is {target}\n')
+
             case '9':
                 print('Exiting.')
                 break
