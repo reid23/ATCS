@@ -55,6 +55,14 @@ def exactChange(n, coins, cache = {}):
             return True
     return False
 
+def exactChange2(n, coins):
+    # print('\t'.join(list(map(str, range(n+1)))))
+    grid = 1
+    for coin in [0] + coins:
+        grid |= grid<<coin
+        # print('\t'.join(list(bin(grid)[2:][::-1])))
+    return not grid&1<<(n-1)
+
 from time import perf_counter_ns
 def benchmark_exact_change():
     times = {'FT':[], 'custom':[]}
@@ -66,7 +74,7 @@ def benchmark_exact_change():
 
     for i in range(50):
         start = perf_counter_ns()
-        exactChangeFT(700+i, (1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25))
+        exactChange2(700+i, [1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25])
         end = perf_counter_ns()
         times['FT'].append((end-start)/1000000)
 
@@ -74,6 +82,9 @@ def benchmark_exact_change():
     print(sum(times['custom'])/50)
     print(sum(times['FT'])/50)
 
+benchmark_exact_change()
+
+exit()
 
 import numpy as np
 import numpy.linalg
@@ -151,3 +162,4 @@ plt.title('Runtime (ns) vs. n for $fibDP(n)$ and $fibSympy(n)$')
 plt.xlabel('$n$')
 plt.ylabel('Runtime (ns)')
 plt.show()
+
