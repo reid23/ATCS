@@ -63,24 +63,31 @@ def exactChange2(n, coins):
         # print('\t'.join(list(bin(grid)[2:][::-1])))
     return not grid&1<<(n-1)
 
+def exactChange3(target, coins):
+    row = 1<<target
+    for coin in coins: row |= row >> coin
+    return row&1
+
 from time import perf_counter_ns
 def benchmark_exact_change():
-    times = {'FT':[], 'custom':[]}
+    times = {'goodDP':[], 'Bad':[]}
     for i in range(50):
         start = perf_counter_ns()
-        exactChange(700+i, (1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25))
+        exactChangeBad(700+i, (1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25))
         end = perf_counter_ns()
-        times['custom'].append((end-start)/1000000)
+        times['Bad'].append((end-start)/1000000)
+        print(i)
 
     for i in range(50):
         start = perf_counter_ns()
-        exactChange2(700+i, [1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25])
+        exactChange3(700+i, [1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25])
         end = perf_counter_ns()
-        times['FT'].append((end-start)/1000000)
+        times['goodDP'].append((end-start)/1000000)
+        print(i)
 
     print(times)
-    print(sum(times['custom'])/50)
-    print(sum(times['FT'])/50)
+    print('goodDP:', sum(times['goodDP'])/50)
+    print('Bad:   ', sum(times['Bad'])/50)
 
 benchmark_exact_change()
 
